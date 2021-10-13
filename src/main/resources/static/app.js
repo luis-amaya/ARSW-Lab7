@@ -21,14 +21,10 @@ var app = (function () {
     var getMousePosition = function (evt) {
         canvas = document.getElementById("canvas");
         var rect = canvas.getBoundingClientRect();
-        stompClient.send("/topic/newpoint" + $('#identf').val, {}, JSON.stringify({
-            x: evt.clientX - rect.left,
-            y: evt.clientY - rect.top
-        }));
-        return {
-            x: evt.clientX - rect.left,
-            y: evt.clientY - rect.top
-        };
+        return new Point(
+            Math.round(evt.clientX - rect.left),
+            Math.round(evt.clientY - rect.top)
+        );
     };
 
 
@@ -41,24 +37,53 @@ var app = (function () {
         stompClient.connect({}, function (frame) {
             console.log('Connected: ' + frame);
             stompClient.subscribe('/topic/newpoint', function (eventbody) {
-                alert("mensaje recibido");
-                var theObject = JSON.parse(eventbody.body);
-                console.log(theObject);
+                var thePoint = JSON.parse(eventbody.body);
+                console.log(thePoint);
+                addPointToCanvas(thePoint);
             });
         });
 
     };
 
 
+    var init = function () {
+        connectAndSubscribe();
+        var canvas = document.getElementById("canvas");
+        if (window.PointerEvent) {
+            canvas.addEventListener("pointerdown", _addPoint);
+        } else {
+            canvas.addEventListener("mousedown", function (event) {
+                canvas.addEventListener("pointerdown", _addPoint);
+            })
+        }
+    }
+
+    function _addPoint(event) {
+        var canvas = document.getElementById("canvas");
+        var offset = _getOffset(canvas);
+        app.publishPoint(event.pageX - offset.left, event.pageY - offset.top);
+    }
+
+    function _getOffset(obj) {
+        var offsetLeft = 0;
+        var offsetTop = 0;
+        do {
+            if (!isNaN(obj.offsetLeft)) {
+                offsetLeft += obj.offsetLeft
+            }
+            if (!isNaN(obj.offsetTop)) {
+                offsetTop += obj.offsetTop;
+            }
+        } while (obj = obj.offsetParent);
+        return {
+            left: offsetLeft,
+            top: offsetTop
+        };
+    }
 
     return {
 
-        init: function () {
-            var can = document.getElementById("canvas");
-
-            //websocket connection
-            connectAndSubscribe();
-        },
+        init: init,
 
         publishPoint: function (px, py) {
             var pt = new Point(px, py);

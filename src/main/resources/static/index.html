@@ -16,23 +16,29 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 -->
 <html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="/webjars/jquery/jquery.min.js"></script>
-        <script src="/webjars/sockjs-client/sockjs.min.js"></script>
-        <script src="/webjars/stomp-websocket/stomp.min.js"></script>
-        <script src="/app.js"></script>
 
-    </head>
+<head>
+    <title>Canvas</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css" type="text/css" media="screen">
+    <script src="/webjars/jquery/jquery.min.js"></script>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script src="/app.js"></script>
+
+</head>
 
 
-    
-    <body onload="app.init()">
-        X:<input id="x" type="number"/>
-        Y:<input id="y" type="number"/>        
-        <button onclick="app.publishPoint($('#x').val(),$('#y').val())">Send point</button>
-        <canvas id="canvas" width="800" height="600"></canvas>
-    </body>
+
+<body onload="app.init()">
+    <canvas id="canvas" width="800" height="600"
+        style="border: 1px solid rgb(2, 18, 255); border-radius: 30px; background-color: rgba(150, 138, 138, 0)"></canvas>
+    <b></b>
+    X:<input id="x" type="number" />
+    Y:<input id="y" type="number" />
+    <button onclick="app.publishPoint($('#x').val(),$('#y').val())">Send point</button>
+
+</body>
+
 </html>
